@@ -63,7 +63,6 @@ function showResults(userLat, userLng, species) {
   let html = `<table>
     <tr>
       <th>名稱</th>
-      <th>經緯度</th>
       <th>距離 (m)</th>
       <th>步行時間</th>
       <th>騎車時間</th>
@@ -74,7 +73,6 @@ function showResults(userLat, userLng, species) {
     const bikeTime = Math.round(loc.distance / 250); // 騎車約 250 m/min
     html += `<tr>
       <td><a href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank">${loc.name}</a></td>
-      <td>${loc.lat.toFixed(6)}, ${loc.lng.toFixed(6)}</td>
       <td>${loc.distance.toFixed(0)}</td>
       <td>${walkTime} 分鐘</td>
       <td>${bikeTime} 分鐘</td>
