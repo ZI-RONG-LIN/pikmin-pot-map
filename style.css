@@ -56,7 +56,7 @@ button {
   font-size: 1.1rem;
   border: none;
   border-radius: 8px;
-  background-color: #ff9f43; /* 主暖色：活力橙 */
+  background-color: #876858; /* 主暖色：暖棕 */
   color: white;
   cursor: pointer;
   margin-top: 10px;
@@ -65,7 +65,7 @@ button {
 }
 
 button:hover {
-  background-color: #ff7f11;
+  background-color: #9c6644;
 }
 
 button:active {
@@ -79,7 +79,7 @@ button:active {
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #fffdf7;
+  background: #9c6644;
 }
 
 table th,
@@ -90,7 +90,7 @@ table td {
 }
 
 table th {
-  background-color: #ffcc80; /* 暖橘色表頭 */
+  background-color: #e6ccb2; /* 暖棕色表頭 */
   color: #5a3a00;
 }
 
