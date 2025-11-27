@@ -107,3 +107,49 @@ table tr:nth-child(even) {
     margin-bottom: 5px;
   }
 }
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: rgba(255, 245, 230, 0.95); /* 柔和暖色 */
+  padding: 12px 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.card h3 {
+  margin: 0 0 5px 0;
+  color: #b85c00;
+}
+
+.card h3 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+
+.card p {
+  margin: 3px 0;
+  color: #5a3a00;
+  font-size: 0.95rem;
+}
+
+/* RWD */
+@media (max-width: 600px) {
+  .card {
+    padding: 10px;
+  }
+  .card p {
+    font-size: 0.9rem;
+  }
+}
+

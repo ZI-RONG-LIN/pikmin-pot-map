@@ -19,6 +19,13 @@ async function loadCSV() {
 // 填入下拉選單
 function populateSpecies() {
   const select = document.getElementById("species");
+
+  // 新增「種類不拘」選項在最前面
+  const allOption = document.createElement("option");
+  allOption.value = "all";
+  allOption.textContent = "種類不拘";
+  select.appendChild(allOption);
+
   Array.from(speciesSet).sort().forEach(spec => {
     const option = document.createElement("option");
     option.value = spec;
@@ -27,18 +34,19 @@ function populateSpecies() {
   });
 }
 
+
 // 計算距離 (Haversine formula)
 function getDistance(lat1, lng1, lat2, lng2) {
   const R = 6371e3; // 地球半徑公尺
-  const φ1 = lat1 * Math.PI/180;
-  const φ2 = lat2 * Math.PI/180;
-  const Δφ = (lat2-lat1) * Math.PI/180;
-  const Δλ = (lng2-lng1) * Math.PI/180;
+  const φ1 = lat1 * Math.PI / 180;
+  const φ2 = lat2 * Math.PI / 180;
+  const Δφ = (lat2 - lat1) * Math.PI / 180;
+  const Δλ = (lng2 - lng1) * Math.PI / 180;
 
-  const a = Math.sin(Δφ/2)*Math.sin(Δφ/2) +
-            Math.cos(φ1)*Math.cos(φ2) *
-            Math.sin(Δλ/2)*Math.sin(Δλ/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return R * c; // 公尺
 }
@@ -46,46 +54,40 @@ function getDistance(lat1, lng1, lat2, lng2) {
 // 顯示結果
 function showResults(userLat, userLng, species) {
   let filtered = locations
-    .filter(loc => loc.species === species)
+    .filter(loc => species === "all" || loc.species === species)
     .map(loc => {
       const distance = getDistance(userLat, userLng, loc.lat, loc.lng);
-      return {...loc, distance};
+      return { ...loc, distance };
     })
-    .filter(loc => loc.distance <= 10000)
-    .sort((a,b) => a.distance - b.distance);
+    .filter(loc => loc.distance <= 10000) // 10km
+    .sort((a, b) => a.distance - b.distance);
 
   const resultDiv = document.getElementById("result");
-  if(filtered.length === 0) {
-    resultDiv.innerHTML = "<p>附近1公里內沒有找到符合的花盆。</p>";
+  if (filtered.length === 0) {
+    resultDiv.innerHTML = "<p>附近10公里內沒有找到符合的花盆。</p>";
     return;
   }
 
-  let html = `<table>
-    <tr>
-      <th>名稱</th>
-      <th>距離 (m)</th>
-      <th>步行時間</th>
-      <th>騎車時間</th>
-    </tr>`;
-
+  let html = `<div class="card-list">`;
   filtered.forEach(loc => {
-    const walkTime = Math.round(loc.distance / 80); // 走路約 80 m/min
-    const bikeTime = Math.round(loc.distance / 250); // 騎車約 250 m/min
-    html += `<tr>
-      <td><a href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank">${loc.name}</a></td>
-      <td>${loc.distance.toFixed(0)}</td>
-      <td>${walkTime} 分鐘</td>
-      <td>${bikeTime} 分鐘</td>
-    </tr>`;
-  });
+    const walkTime = Math.round((loc.distance / 1000) / (80 / 1000) ); // 走路約 80 m/min
+    const bikeTime = Math.round((loc.distance / 1000) / (250 / 1000) ); // 騎車約 250 m/min
 
-  html += "</table>";
+    html += `
+      <div class="card">
+        <h3><a href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank">${loc.name}</a></h3>
+        <p>種類: ${loc.species}</p>
+    <p>距離: ${(loc.distance / 1000).toFixed(2)} km | 騎車時間: ${bikeTime} 分鐘 | 步行時間: ${walkTime} 分鐘</p>
+      </div>
+    `;
+  });
+  html += `</div>`;
   resultDiv.innerHTML = html;
 }
 
 // 取得使用者位置
 document.getElementById("locate").addEventListener("click", () => {
-  if(navigator.geolocation){
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
       document.getElementById("latitude").value = pos.coords.latitude.toFixed(6);
       document.getElementById("longitude").value = pos.coords.longitude.toFixed(6);
@@ -103,8 +105,8 @@ document.getElementById("search").addEventListener("click", () => {
   const lat = parseFloat(document.getElementById("latitude").value);
   const lng = parseFloat(document.getElementById("longitude").value);
 
-  if(!species) { alert("請選擇皮克敏種類"); return; }
-  if(isNaN(lat) || isNaN(lng)) { alert("請輸入有效的經緯度"); return; }
+  if (!species) { alert("請選擇皮克敏種類"); return; }
+  if (isNaN(lat) || isNaN(lng)) { alert("請輸入有效的經緯度"); return; }
 
   showResults(lat, lng, species);
 });
