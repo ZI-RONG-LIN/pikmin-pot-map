@@ -2,6 +2,9 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwF-CF0mHIcyE8
 
 let locations = [];
 let speciesSet = new Set();
+let currentPage = 1;       // 目前頁碼
+const itemsPerPage = 5;    // 每頁顯示 5 個
+let currentFiltered = [];  // 存放目前篩選後的結果
 
 // 讀取 CSV
 async function loadCSV() {
@@ -50,40 +53,63 @@ function getDistance(lat1, lng1, lat2, lng2) {
 
   return R * c; // 公尺
 }
+function showResultsPage(page = 1) {
+  const resultDiv = document.getElementById("result");
+  const totalPages = Math.ceil(currentFiltered.length / itemsPerPage);
+
+  if (currentFiltered.length === 0) {
+    resultDiv.innerHTML = "<p>附近10公里內沒有找到符合的花盆。</p>";
+    return;
+  }
+
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, currentFiltered.length);
+  const pageItems = currentFiltered.slice(startIndex, endIndex);
+
+  let html = `<div class="card-list">`;
+  pageItems.forEach(loc => {
+    const walkTime = Math.round(loc.distance / 80);
+    const bikeTime = Math.round(loc.distance / 250);
+
+    html += `
+      <div class="card">
+        <h3><a href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank">${loc.name}</a></h3>
+        <p class="species-tag">${loc.species}</p>
+        <p>距離: ${(loc.distance / 1000).toFixed(2)} km | 步行時間: ${walkTime} 分鐘 | 騎車時間: ${bikeTime} 分鐘</p>
+      </div>
+    `;
+  });
+  html += `</div>`;
+
+  // 分頁按鈕
+  html += `<div class="pagination" style="text-align:center; margin-top:10px;">`;
+  if (page > 1) {
+    html += `<button onclick="showResultsPage(${page - 1})">上一頁</button>`;
+  }
+  html += ` 第 ${page} / ${totalPages} 頁 `;
+  if (page < totalPages) {
+    html += `<button onclick="showResultsPage(${page + 1})">下一頁</button>`;
+  }
+  html += `</div>`;
+
+  resultDiv.innerHTML = html;
+  currentPage = page;
+}
 
 // 顯示結果
 function showResults(userLat, userLng, species) {
-  let filtered = locations
+  currentFiltered = locations
     .filter(loc => species === "all" || loc.species === species)
     .map(loc => {
       const distance = getDistance(userLat, userLng, loc.lat, loc.lng);
       return { ...loc, distance };
     })
-    .filter(loc => loc.distance <= 10000) // 10km
+    .filter(loc => loc.distance <= 10000)
     .sort((a, b) => a.distance - b.distance);
 
-  const resultDiv = document.getElementById("result");
-  if (filtered.length === 0) {
-    resultDiv.innerHTML = "<p>附近10公里內沒有找到符合的花盆。</p>";
-    return;
-  }
-
-  let html = `<div class="card-list">`;
-  filtered.forEach(loc => {
-    const walkTime = Math.round((loc.distance / 1000) / (80 / 1000) ); // 走路約 80 m/min
-    const bikeTime = Math.round((loc.distance / 1000) / (250 / 1000) ); // 騎車約 250 m/min
-
-    html += `
-      <div class="card">
-        <h3><a href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank">${loc.name}</a></h3>
-        <p>種類: ${loc.species}</p>
-    <p>距離: ${(loc.distance / 1000).toFixed(2)} km | 騎車時間: ${bikeTime} 分鐘 | 步行時間: ${walkTime} 分鐘</p>
-      </div>
-    `;
-  });
-  html += `</div>`;
-  resultDiv.innerHTML = html;
+  showResultsPage(1); // 顯示第一頁
 }
+
 
 // 取得使用者位置
 document.getElementById("locate").addEventListener("click", () => {
