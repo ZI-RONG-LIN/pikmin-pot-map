@@ -3,29 +3,31 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("./image.png");;
-  background-size: cover;       /* 讓圖片完整覆蓋畫面 */
-  background-position: center;  /* 把圖片置中 */
-  background-repeat: no-repeat; /* 不重複平鋪 */
-  background-attachment: fixed; /* (可選) 滾動時背景固定 */
+  background-image: url("./image.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
-
 
 .container {
   max-width: 600px;
   margin: 20px auto;
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: rgba(255, 250, 240, 0.9); /* 柔和暖色 + 半透明 */
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  backdrop-filter: blur(5px); /* 現代毛玻璃效果 */
 }
 
 h1 {
   text-align: center;
-  color: #333;
+  color: #b85c00;
+  margin-bottom: 20px;
+  font-weight: 700;
 }
 
 .input-group {
@@ -37,26 +39,37 @@ h1 {
 .input-group label {
   margin-bottom: 5px;
   font-weight: bold;
+  color: #8a4b00;
 }
 
 .input-group input,
-.input-group select,
-button {
-  padding: 8px;
+.input-group select {
+  padding: 10px;
   font-size: 1rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  border-radius: 8px;
+  border: 1px solid #d9b38c;
+  background: #fff9f2;
 }
 
 button {
-  background-color: #4CAF50;
+  padding: 10px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #ff9f43; /* 主暖色：活力橙 */
   color: white;
   cursor: pointer;
   margin-top: 10px;
+  transition: background 0.25s, transform 0.1s;
+  font-weight: bold;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #ff7f11;
+}
+
+button:active {
+  transform: scale(0.98);
 }
 
 #result {
@@ -66,25 +79,30 @@ button:hover {
 table {
   width: 100%;
   border-collapse: collapse;
+  background: #fffdf7;
 }
 
 table th,
 table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  border: 1px solid #ecd9c6;
+  padding: 10px;
   text-align: center;
 }
 
 table th {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #ffcc80; /* 暖橘色表頭 */
+  color: #5a3a00;
+}
+
+table tr:nth-child(even) {
+  background-color: #fff4e6;
 }
 
 @media (max-width: 600px) {
   .input-group {
     flex-direction: column;
   }
-  
+
   .input-group input {
     margin-bottom: 5px;
   }
