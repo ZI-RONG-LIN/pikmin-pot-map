@@ -153,3 +153,27 @@ table tr:nth-child(even) {
   }
 }
 
+.hidden {
+  display: none;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.tab-buttons button {
+  flex: 1;
+  background-color: #d9b38c;
+  color: #5a3a00;
+}
+
+.tab-buttons button.active {
+  background-color: #876858;
+  color: #fff;
+}
+
+.species-tag {
+  font-weight: bold;
+  color: #b85c00;
+}
