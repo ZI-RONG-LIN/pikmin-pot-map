@@ -58,7 +58,7 @@ function showResultsPage(page = 1) {
   const totalPages = Math.ceil(currentFiltered.length / itemsPerPage);
 
   if (currentFiltered.length === 0) {
-    resultDiv.innerHTML = "<p>附近10公里內沒有找到符合的花盆。</p>";
+    resultDiv.innerHTML = "<p>附近沒有找到符合的花盆。</p>";
     return;
   }
 
@@ -69,7 +69,7 @@ function showResultsPage(page = 1) {
   let html = `<div class="card-list">`;
   pageItems.forEach(loc => {
     const walkTime = Math.round(loc.distance / 80);
-    const bikeTime = Math.round(loc.distance / 250);
+    const bikeTime = Math.round(loc.distance / 500);
 
     html += `
       <div class="card">
@@ -104,7 +104,7 @@ function showResults(userLat, userLng, species) {
       const distance = getDistance(userLat, userLng, loc.lat, loc.lng);
       return { ...loc, distance };
     })
-    .filter(loc => loc.distance <= 10000)
+    .filter(loc => loc.distance <= 7500)
     .sort((a, b) => a.distance - b.distance);
 
   showResultsPage(1); // 顯示第一頁
