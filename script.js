@@ -47,6 +47,11 @@ function populateCities() {
     option.textContent = city;
     select.appendChild(option);
   });
+
+  // 新增：使用者點擊下拉時清空結果
+  select.addEventListener("focus", () => {
+    clearResults();
+  });
 }
 
 // Haversine 計算距離
