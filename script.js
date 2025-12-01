@@ -144,11 +144,22 @@ function searchByCity() {
   if (!species) { alert("請選擇皮克敏種類"); return; }
   if (!city) { alert("請選擇縣市"); return; }
 
-  // 如果有定位則計算距離，沒有則 distance 為 null
-  currentFiltered = locations
-    .filter(loc => (species === "all" || loc.species === species) && loc.city === city)
-    .map(loc => loc)
-    .sort((a,b)=>a.name.localeCompare(b.name));
+  // 情境 1：有定位 → 計算距離並依距離由近到遠排序
+  if (userPosition) {
+    currentFiltered = locations
+      .filter(loc => (species === "all" || loc.species === species) && loc.city === city)
+      .map(loc => ({
+        ...loc,
+        distance: getDistance(userPosition.lat, userPosition.lng, loc.lat, loc.lng)
+      }))
+      .sort((a, b) => a.distance - b.distance);
+  } 
+  // 情境 2：沒有定位 → 不顯示距離，用名稱排序
+  else {
+    currentFiltered = locations
+      .filter(loc => (species === "all" || loc.species === species) && loc.city === city)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
 
   showResultsPage(1);
 }
